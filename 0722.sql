@@ -251,3 +251,117 @@ WHERE deptno = 30;
 SELECT ename AS 이름, sal AS 급여, ROUND(sal / 12 / 5, 1) AS `시간당 임금`
 FROM emp
 WHERE deptno = 20;
+
+/*
+ * 모든 사원의 실수령액을 계산하여 출력하라. 단, 이름, 급여, 실수령액을 출력하라.
+ * (실수령액은 급여에 대해 10%의 세금을 뺀 금액)
+ */
+SELECT ename, sal, sal * 0.9
+FROM emp;
+
+/*
+ * dept 테이블의 구조와 내용을 조회하라.
+ */
+DESC dept;
+
+/*
+ * dept 테이블에서 부서명과 위치를 연결하여 출력하라.
+ */
+SELECT CONCAT(dname, ', ', loc)
+FROM dept;
+
+/*
+ * emp 테이블에서 사원번호가 7788인 사원의 이름과 부서번호를 출력하는 문장을 작성하시오.
+ */
+SELECT ename, deptno
+FROM emp
+WHERE empno = 7788;
+
+/*
+ * emp Table에서 이름, 급여, 커미션 금액, 총액(sal + comm)을 구하여 총액이 많은 순서로 출력하라. 
+ * 단, 커미션이 NULL인 사람은 제외한다.
+ */
+SELECT ename, sal, comm, sal + IFNULL(comm, 0) AS 총액
+FROM emp
+ORDER BY 총액 DESC;
+
+/*
+ * 30번 부서의 연봉을 계산하여 이름, 부서번호, 급여, 연봉을 출력하라. 단, 연말에 급여의 150%를 
+ * 보너스로 지급한다.
+ */
+SELECT ename, deptno, sal, (sal + IFNULL(comm, 0)) * 11 + (sal + IFNULL(comm, 0)) * 1.5 AS 연봉
+FROM emp
+WHERE deptno = 30;
+
+/*
+ * 직업이 MANAGER가 아닌 사람의 모든 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+WHERE job <> 'MANAGER';
+-- WHERE job != 'MANAGER';
+
+/*
+ * 이름이 K로 시작하는 사람보다 높은 이름을 가진 사람의 모든 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+WHERE ename >= 'K';
+
+/*
+ * 이름 중 S가 들어가 있는 사람의 모든 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+WHERE ename LIKE '%S%';
+
+/*
+ * 이름이 J로 시작하고 마지막 글자가 S로 끝나는 사람의 모든 정보를 출력하시오.
+ * (단 이름은 전체 5글자이다.)
+ */
+SELECT *
+FROM emp
+WHERE ename LIKE 'J___S';
+
+/*
+ * 첫번째 문자는 관계없고, 두번째 문자가 A인 사람의 모든 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+WHERE ename LIKE '_A%';
+
+/*
+ * 커미션이 NULL인 사람의 모든 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+WHERE comm IS NULL;
+
+/*
+ * 커미션이 NULL이 아닌 사람의 모든 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+WHERE comm IS NOT NULL;
+
+/*
+ * 이름의 첫글자가 K로 시작하거나 부서번호가 30인 사람의 사원번호, 이름, 부서번호를 출력하시오.
+ */
+SELECT empno, ename, deptno
+FROM emp
+WHERE (ename LIKE 'K%') OR deptno = 30;
+
+/*
+ * 부서번호로 오름차순 정렬한 후 급여가 많은 사람순으로 출력하시오.
+ */
+SELECT *
+FROM emp
+ORDER BY deptno, sal DESC;
+
+/*
+ * 이름이 B와 J 사이의 모든 사원의 정보를 출력하시오.
+ */
+SELECT *
+FROM emp
+-- WHERE ename >= 'B' AND ename <= 'J';
+WHERE ename BETWEEN 'B' AND 'J';
