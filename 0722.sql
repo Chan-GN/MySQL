@@ -248,6 +248,6 @@ WHERE deptno = 30;
  * 1일 근무시간은 5시간이다. 출력양식은 이름, 급여, 시간당 임금(소수이하 첫 번째 자리에서 반올
  * 림)을 출력하라
  */
-SELECT
+SELECT ename AS 이름, sal AS 급여, ROUND(sal / 12 / 5, 1) AS `시간당 임금`
 FROM emp
 WHERE deptno = 20;
