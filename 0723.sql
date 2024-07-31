@@ -8,17 +8,19 @@
 SELECT IF(1 > 2, 2, 3);
 
 -- CASE
-SELECT job, sal,
-	CASE WHEN job = 'ANALYST' THEN sal * 1.1
-		 WHEN job = 'CLERK' THEN sal * 1.15
-		 WHEN job = 'MANAGER' THEN sal * 1.2
-		 ELSE sal
-	END AS SALARY
+SELECT job,
+       sal,
+       CASE
+           WHEN job = 'ANALYST' THEN sal * 1.1
+           WHEN job = 'CLERK' THEN sal * 1.15
+           WHEN job = 'MANAGER' THEN sal * 1.2
+           ELSE sal
+           END AS SALARY
 FROM emp;
 
 -- NULLIF()
-SELECT NULLIF(1,1);
-SELECT NULLIF(1,2);
+SELECT NULLIF(1, 1);
+SELECT NULLIF(1, 2);
 
 -- INSTR()
 SELECT INSTR(ename, 'L'), ename
@@ -111,10 +113,10 @@ ORDER BY SUM(sal) DESC;
  */
 SELECT deptno, AVG(sal) as avg_salary
 FROM emp
-GROUP BY deptno 
+GROUP BY deptno
 HAVING AVG(sal) >= 2000
 ORDER BY avg_salary DESC;
- 
+
 /*
  * 각 직무별로 가장 높은 급여와 가장 낮은 급여의 차이를 계산하세요. 
  * 단, 직원이 2명 이상인 직무만 포함하고, 급여 차이가 큰 순서대로 
@@ -132,72 +134,88 @@ ORDER BY 차이 DESC;
 SELECT YEAR(hiredate) AS `입사 년도`, COUNT(*) AS `직원 수`, MAX(sal) AS `최고 급여`
 FROM emp
 GROUP BY YEAR(hiredate)
-ORDER BY `입사 년도`; 
+ORDER BY `입사 년도`;
 
 -- -------------------JOIN------------------- --
 
 -- CROSS JOIN
 SELECT emp.ename, emp.sal, dept.deptno, dept.loc
 -- FROM emp CROSS JOIN dept;
-FROM emp, dept;
+FROM emp,
+     dept;
 
 SELECT ename, dept.deptno, loc
-FROM dept, emp
-WHERE dept.deptno = emp.deptno AND emp.ename = 'SMITH';
+FROM dept,
+     emp
+WHERE dept.deptno = emp.deptno
+  AND emp.ename = 'SMITH';
 
 SELECT ename, d.deptno, loc
-FROM dept d, emp e
-WHERE d.deptno = e.deptno AND e.ename = 'SMITH';
+FROM dept d,
+     emp e
+WHERE d.deptno = e.deptno
+  AND e.ename = 'SMITH';
 
 SELECT ename, loc
-FROM emp NATURAL JOIN dept
+FROM emp
+         NATURAL JOIN dept
 WHERE ename LIKE 'SMI%';
 
 SELECT ename, loc
-FROM emp INNER JOIN dept USING(deptno)
+FROM emp
+         INNER JOIN dept USING (deptno)
 WHERE ename LIKE 'SMI%';
 
 SELECT ename, loc
-FROM emp e JOIN dept d ON (e.deptno = d.deptno)
+FROM emp e
+         JOIN dept d ON (e.deptno = d.deptno)
 WHERE ename LIKE 'SMI%';
 
 use world;
 
 SELECT city.name, city.Population, country.name, country.IndepYear, countryLanguage.language
-FROM city 
-	JOIN country ON (city.countrycode = country.code)
-	JOIN countrylanguage ON (country.code = countrylanguage.countryCode)
+FROM city
+         JOIN country ON (city.countrycode = country.code)
+         JOIN countrylanguage ON (country.code = countrylanguage.countryCode)
 WHERE city.name = 'SEOUL';
 
 use mycompany;
 -- 비등가 조인
 SELECT ename, sal, grade
-FROM emp, salgrade
-WHERE (sal BETWEEN losal AND hisal)	AND ename = 'SMITH';
+FROM emp,
+     salgrade
+WHERE (sal BETWEEN losal AND hisal)
+  AND ename = 'SMITH';
 
-SELECT * FROM salgrade;
+SELECT *
+FROM salgrade;
 
 SELECT dept.deptno, dname, AVG(sal), SUM(sal)
-FROM emp JOIN dept ON(emp.deptno = dept.deptno)
+FROM emp
+         JOIN dept ON (emp.deptno = dept.deptno)
 GROUP BY deptno;
 
 SELECT ename, empno, d.deptno, d.dname, loc
-FROM emp e RIGHT OUTER JOIN dept d ON e.deptno = d.deptno;
+FROM emp e
+         RIGHT OUTER JOIN dept d ON e.deptno = d.deptno;
 
 -- SELF JOIN
 SELECT CONCAT(worker.ename, '의 관리자의 이름은 ', manager.ename, '입니다.') AS `관리자 정보`
-FROM emp worker JOIN emp manager
-ON worker.mgr = manager.empno;
+FROM emp worker
+         JOIN emp manager
+              ON worker.mgr = manager.empno;
 
 /*
  * 사원테이블에서 그들의 관리자보다 먼저 입사한 사원에 대해 이름, 입사일, 관리자 이름,
  * 관리자 입사일을 출력하시오.
  */
-SELECT 
-	worker.ename AS `사원 이름`, worker.hiredate AS `사원 입사일`,
-    manager.ename AS `매니저 이름`, manager.hiredate AS `매니저 입사일`
-FROM emp worker JOIN emp manager
-ON worker.mgr = manager.empno
+SELECT worker.ename     AS `사원 이름`,
+       worker.hiredate  AS `사원 입사일`,
+       manager.ename    AS `매니저 이름`,
+       manager.hiredate AS `매니저 입사일`
+FROM emp worker
+         JOIN emp manager
+              ON worker.mgr = manager.empno
 WHERE worker.hiredate <= manager.hiredate;
 
 SELECT job, deptno, sal
@@ -212,30 +230,62 @@ WHERE deptno = 10;
 SELECT ename, sal
 FROM emp
 WHERE sal > (SELECT sal
-			 FROM emp
-			 WHERE empno = 7566)
+             FROM emp
+             WHERE empno = 7566)
 ORDER BY sal DESC;
-             
+
 -- 사번 7369번과 직무가 동일한 사원들의 이름과 직무를 표시하시오
 SELECT ename, job
 FROM emp
 WHERE job = (SELECT job
-			 FROM emp
-			 WHERE empno = 7369);
-             
+             FROM emp
+             WHERE empno = 7369);
+
 -- 부서에서 최소 급여를 받는 사원
 SELECT empno, ename, deptno, sal
 FROM emp
 WHERE sal IN (SELECT MIN(sal)
-			 FROM emp
-             GROUP BY deptno);
+              FROM emp
+              GROUP BY deptno);
 
-SELECT * FROM emp;
+SELECT *
+FROM emp;
 
 -- 급여가 사무원보다 적으면서 직무가 사무원이 아닌 사원
 SELECT empno, ename, job, sal
 FROM emp
 WHERE sal < ANY (SELECT sal
-			 FROM emp
-             WHERE job = 'CLERK')
-	  AND job != 'CLERK';
+                 FROM emp
+                 WHERE job = 'CLERK')
+  AND job != 'CLERK';
+
+
+/*
+ * emp table에서 이름의 첫 글자가 'K'보다 크고 'Y'보다 작은 사원의 정보를 
+ * 사원번호, 이름, 업무, 급여, 부서번호를 출력하고, 이름순으로 정렬하시오(단, SUBSTR() 사용할 것)
+ */
+SELECT empno, ename, job, sal, deptno
+FROM emp
+WHERE SUBSTR(ename, 1) BETWEEN 'K' AND 'Y'
+ORDER BY ename;
+
+/*
+ * emp table에서 이름 중 'L'자의 위치를 출력하시오
+ */
+SELECT INSTR(ename, 'L'), ename
+FROM emp;
+
+/*
+ * emp table에서 담당 업무 중 좌측에 'A'를 삭제하고 급여 중 좌측의 1을 삭제하여 출력하시오
+ */
+
+/*
+ * emp table에서 이름, 입사일, 입사일로부터 6개월 후 돌아오는 월요일을 구하여 출력하시오.
+ */
+SELECT ename,
+       hiredate,
+       DATE_ADD(
+               DATE_ADD(hiredate, INTERVAL 6 MONTH),
+               INTERVAL (7 - WEEKDAY(DATE_ADD(hiredate, INTERVAL 6 MONTH))) % 7 DAY
+       ) AS six_month_monday
+FROM emp;
